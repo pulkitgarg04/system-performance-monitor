@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LOG_DIR="$HOME/system_monitor"
-LOG_FILE="$LOG_DIR/performance_$(date +'%Y-%m-%d').log"
+LOG_DIR="./system_monitor"
+LOG_FILE="$LOG_DIR/performance_$(date +'%Y-%m-%d_%H-%M-%S').log"
 
 mkdir -p "$LOG_DIR"
 
