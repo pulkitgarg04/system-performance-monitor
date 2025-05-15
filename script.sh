@@ -1,12 +1,50 @@
 #!/bin/bash
 
+# Configuration
 LOG_DIR="./system_monitor"
 LOG_FILE="$LOG_DIR/performance_$(date +'%Y-%m-%d_%H-%M-%S').log"
+ARCHIVE_DIR="$LOG_DIR/archives"
+THRESHOLD_CPU=90
+THRESHOLD_MEM=80
+THRESHOLD_DISK=10
 
-mkdir -p "$LOG_DIR"
+mkdir -p "$LOG_DIR" "$ARCHIVE_DIR"
 
 log() {
     echo -e "$1" | tee -a "$LOG_FILE"
+}
+
+compress_logs() {
+    find "$LOG_DIR" -type f -name "*.log" -mtime +7 -exec gzip {} \; -exec mv {}.gz "$ARCHIVE_DIR/" \;
+}
+
+check_cpu() {
+    CPU_USAGE=$(top -b -n 1 | grep "Cpu(s)" | awk '{print $2 + $4}')
+    log "CPU Usage: $CPU_USAGE%"
+    if (( $(echo "$CPU_USAGE > $THRESHOLD_CPU" | bc -l) )); then
+        alert "High CPU usage detected: $CPU_USAGE% (Threshold: $THRESHOLD_CPU%)"
+    fi
+}
+
+check_memory() {
+    MEM=$(free -m | awk '/^Mem/ {print $3/$2 * 100.0}')
+    log "Memory Usage: $MEM%"
+    if (( $(echo "$MEM > $THRESHOLD_MEM" | bc -l) )); then
+        alert "High memory usage detected: $MEM% (Threshold: $THRESHOLD_MEM%)"
+    fi
+}
+
+check_disk() {
+    DISK=$(df / | awk '/\// {print $5}' | sed 's/%//')
+    log "Disk Usage: $DISK%"
+    if (( DISK > THRESHOLD_DISK )); then
+        alert "Low disk space detected: $DISK% free (Threshold: $THRESHOLD_DISK%)"
+    fi
+}
+
+generate_summary() {
+    SUMMARY="Summary:\nCPU: $CPU_USAGE%\nMemory: $MEM%\nDisk: $DISK%\n"
+    log "\n--- Summary ---\n$SUMMARY"
 }
 
 log "------------------------------------------"
@@ -27,6 +65,13 @@ free -h | tee -a "$LOG_FILE"
 
 log "\n--- Processes Summary (ps aux --sort=-%cpu | head) ---"
 ps aux --sort=-%cpu | head -n 10 | tee -a "$LOG_FILE"
+
+log "\n--- More stats: ---"
+check_cpu
+check_memory
+check_disk
+generate_summary
+compress_logs
 
 log "\nMonitoring Complete: $(date)"
 log "------------------------------------------"
