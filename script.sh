@@ -1,21 +1,32 @@
 #!/bin/bash
 
-# Configuration
 LOG_DIR="./system_monitor"
+CSV_DIR="$LOG_DIR/csv"
 LOG_FILE="$LOG_DIR/performance_$(date +'%Y-%m-%d_%H-%M-%S').log"
-ARCHIVE_DIR="$LOG_DIR/archives"
+CSV_FILE="$CSV_DIR/performance_report.csv"
 THRESHOLD_CPU=90
 THRESHOLD_MEM=80
 THRESHOLD_DISK=10
 
-mkdir -p "$LOG_DIR" "$ARCHIVE_DIR"
+mkdir -p "$LOG_DIR" "$CSV_DIR"
 
 log() {
     echo -e "$1" | tee -a "$LOG_FILE"
 }
 
+log_csv() {
+    echo -e "$1" >> "$CSV_FILE"
+}
+
 compress_logs() {
-    find "$LOG_DIR" -type f -name "*.log" -mtime +7 -exec gzip {} \; -exec mv {}.gz "$ARCHIVE_DIR/" \;
+    find "$LOG_DIR" -type f -name "*.log" -mtime +7 -print | while read log_file; do
+        if [ -f "$log_file" ]; then
+            gzip "$(basename "$log_file")"
+            log "Compressed $(basename "$log_file")"
+    	else
+            echo "No log files older than 7 days to compress."
+        fi
+    done
 }
 
 check_cpu() {
@@ -47,6 +58,14 @@ generate_summary() {
     log "\n--- Summary ---\n$SUMMARY"
 }
 
+generate_csv_report() {
+    if [ ! -f "$CSV_FILE" ]; then
+        log_csv "Timestamp,CPU_Usage,Memory_Usage,Disk_Usage"
+    fi
+
+    log_csv "$(date),$CPU_USAGE,$MEM,$DISK"
+}
+
 log "------------------------------------------"
 log "System Performance Monitoring - $(date)"
 log "------------------------------------------"
@@ -72,6 +91,7 @@ check_memory
 check_disk
 generate_summary
 compress_logs
+generate_csv_report
 
 log "\nMonitoring Complete: $(date)"
 log "------------------------------------------"

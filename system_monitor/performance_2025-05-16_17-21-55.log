@@ -1,0 +1,86 @@
+------------------------------------------
+System Performance Monitoring - Fri May 16 17:21:55 UTC 2025
+------------------------------------------
+
+--- TOP Command Snapshot ---
+top - 17:21:55 up  1:14,  1 user,  load average: 0.05, 0.03, 0.05
+Tasks:  27 total,   1 running,  26 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st 
+MiB Mem :   7767.2 total,   6786.1 free,    638.3 used,    614.2 buff/cache     
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   7128.9 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+      1 root      20   0   21748  13100   9692 S   0.0   0.2   0:01.84 systemd
+      2 root      20   0    2776   1920   1796 S   0.0   0.0   0:00.00 init-sy+
+      8 root      20   0    2776     68     68 S   0.0   0.0   0:00.00 init
+     50 root      19  -1   66748  16028  14784 S   0.0   0.2   0:17.34 systemd+
+     99 root      20   0   23976   5956   4808 S   0.0   0.1   0:00.21 systemd+
+    111 systemd+  20   0   21452  11708   9516 S   0.0   0.1   0:00.39 systemd+
+    112 systemd+  20   0   91020   6528   5680 S   0.0   0.1   0:00.63 systemd+
+    151 root      20   0    4236   2680   2448 S   0.0   0.0   0:00.01 cron
+    152 message+  20   0    9588   4984   4448 S   0.0   0.1   0:01.59 dbus-da+
+    159 root      20   0   17976   8264   7244 S   0.0   0.1   0:00.53 systemd+
+    162 root      20   0 1756096  15952   9352 S   0.0   0.2   0:00.15 wsl-pro+
+    167 root      20   0    3160   1100   1008 S   0.0   0.0   0:00.00 agetty
+    178 root      20   0    3116   1108   1020 S   0.0   0.0   0:00.00 agetty
+
+--- VMStat Snapshot ---
+procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu
+ 0  0      0 6948480  19800 609164    0    0   242  5705  229    0  0  0 100  0  0  0
+ 0  0      0 6948480  19800 609196    0    0     0     0   12   73  0  0 100  0  0  0
+ 0  0      0 6949236  19872 609320    0    0     0  7680  776 1623  0  0 99  1  0  0
+ 0  0      0 6949248  19872 609204    0    0     0     0   12   60  0  0 100  0  0  0
+ 0  0      0 6949248  19872 609204    0    0     0     0    8   43  0  0 100  0  0  0
+
+--- Disk Usage (df -h) ---
+Filesystem      Size  Used Avail Use% Mounted on
+none            3.8G     0  3.8G   0% /usr/lib/modules/5.15.167.4-microsoft-standard-WSL2
+none            3.8G  4.0K  3.8G   1% /mnt/wsl
+drivers         275G  216G   59G  79% /usr/lib/wsl/drivers
+/dev/sdc       1007G  2.4G  954G   1% /
+none            3.8G   80K  3.8G   1% /mnt/wslg
+none            3.8G     0  3.8G   0% /usr/lib/wsl/lib
+rootfs          3.8G  2.4M  3.8G   1% /init
+none            3.8G  524K  3.8G   1% /run
+none            3.8G     0  3.8G   0% /run/lock
+none            3.8G     0  3.8G   0% /run/shm
+tmpfs           4.0M     0  4.0M   0% /sys/fs/cgroup
+none            3.8G   76K  3.8G   1% /mnt/wslg/versions.txt
+none            3.8G   76K  3.8G   1% /mnt/wslg/doc
+C:\             275G  216G   59G  79% /mnt/c
+F:\             142G  8.9G  133G   7% /mnt/f
+P:\              60G   15G   46G  25% /mnt/p
+tmpfs           777M   16K  777M   1% /run/user/1000
+
+--- Memory Usage (free -h) ---
+               total        used        free      shared  buff/cache   available
+Mem:           7.6Gi       638Mi       6.6Gi       3.2Mi       614Mi       7.0Gi
+Swap:          2.0Gi          0B       2.0Gi
+
+--- Processes Summary (ps aux --sort=-%cpu | head) ---
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root          50  0.3  0.2  66748 16028 ?        S<s  16:07   0:17 /usr/lib/systemd/systemd-journald
+pulkitg+    9921  0.2  0.0   4752  3476 pts/0    S+   17:21   0:00 /bin/bash ./script.sh
+root           1  0.0  0.1  21748 13100 ?        Ss   16:07   0:01 /sbin/init
+message+     152  0.0  0.0   9588  4984 ?        Ss   16:07   0:01 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root         309  0.0  0.0   2780  1152 ?        S    16:07   0:01 /init
+systemd+     112  0.0  0.0  91020  6528 ?        Ssl  16:07   0:00 /usr/lib/systemd/systemd-timesyncd
+root         159  0.0  0.1  17976  8264 ?        Ss   16:07   0:00 /usr/lib/systemd/systemd-logind
+pulkitg+     310  0.0  0.0   6204  5540 pts/0    Ss   16:07   0:00 -bash
+systemd+     111  0.0  0.1  21452 11708 ?        Ss   16:07   0:00 /usr/lib/systemd/systemd-resolved
+
+--- More stats: ---
+CPU Usage: 0%
+Memory Usage: 8.21424%
+Disk Usage: 1%
+
+--- Summary ---
+Summary:
+CPU: 0%
+Memory: 8.21424%
+Disk: 1%
+
+
+Monitoring Complete: Fri May 16 17:22:00 UTC 2025
+------------------------------------------
