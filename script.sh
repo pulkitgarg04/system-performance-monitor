@@ -33,7 +33,7 @@ check_cpu() {
     CPU_USAGE=$(top -b -n 1 | grep "Cpu(s)" | awk '{print $2 + $4}')
     log "CPU Usage: $CPU_USAGE%"
     if (( $(echo "$CPU_USAGE > $THRESHOLD_CPU" | bc -l) )); then
-        alert "High CPU usage detected: $CPU_USAGE% (Threshold: $THRESHOLD_CPU%)"
+        log "High CPU usage detected: $CPU_USAGE% (Threshold: $THRESHOLD_CPU%)"
     fi
 }
 
@@ -41,7 +41,7 @@ check_memory() {
     MEM=$(free -m | awk '/^Mem/ {print $3/$2 * 100.0}')
     log "Memory Usage: $MEM%"
     if (( $(echo "$MEM > $THRESHOLD_MEM" | bc -l) )); then
-        alert "High memory usage detected: $MEM% (Threshold: $THRESHOLD_MEM%)"
+        log "High memory usage detected: $MEM% (Threshold: $THRESHOLD_MEM%)"
     fi
 }
 
@@ -49,7 +49,7 @@ check_disk() {
     DISK=$(df / | awk '/\// {print $5}' | sed 's/%//')
     log "Disk Usage: $DISK%"
     if (( DISK > THRESHOLD_DISK )); then
-        alert "Low disk space detected: $DISK% free (Threshold: $THRESHOLD_DISK%)"
+        log "Low disk space detected: $DISK% free (Threshold: $THRESHOLD_DISK%)"
     fi
 }
 
